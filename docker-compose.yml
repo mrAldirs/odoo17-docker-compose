@@ -1,0 +1,31 @@
+version: "3"
+services:
+  web:
+    image: odoo:17.0
+    container_name: odoo17
+    depends_on:
+      - db
+    ports:
+      - "17000:8069" #The right one is the original port from Odoo, and the left one is a port that we can freely change for the container we created.
+    volumes:
+      - odoo-web-data:/var/lib/odoo
+      - ./config:/etc/odoo
+      - ./addons:/mnt/extra-addons
+    restart: always
+
+  db:
+    image: postgres:15
+    container_name: db
+    environment:
+      - POSTGRES_DB=postgres #Database Name
+      - POSTGRES_USER=odoo17 #User for login to Database
+      - POSTGRES_PASSWORD=odoo17 #Password for login to Database
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data/pgata
+    ports:
+      - "5432:5432" #The right one is the original postgres port, and the left one is a port that we are free to change for the container we created.
+    restart: always
+volumes:
+  odoo-web-data:
+  odoo-db-data:
